@@ -17,7 +17,6 @@ class _HomeState extends State<Home> {
   String _resultado;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-
   @override
   void initState() {
     super.initState();
@@ -99,30 +98,28 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget build(BuildContext context){
-    return Scaffold(appBar:buildAppBar(),
-    backgroundColor:  Colors.white,
-    body: SingleChildScrollView(
-      padding: EdgeInsets.all(20.0),child: buildForm()
-      )
-      );
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: buildAppBar(),
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+            padding: EdgeInsets.all(20.0), child: buildForm()));
   }
 
-  AppBar buildAppBar(){
+  AppBar buildAppBar() {
     return AppBar(
       title: Text("Calcular IMC"),
       backgroundColor: Colors.blue,
-      actions:<Widget> [
+      actions: <Widget>[
         IconButton(
           icon: Icon(Icons.refresh),
-          onPressed: (){
-            resetFields();
+          onPressed: () {
+            resetFields(); //resetFields;
           },
-          )
+        )
       ],
     );
   }
-
 
   TextFormField buildTextFormField(
       {TextEditingController controller, String error, String label}) {
