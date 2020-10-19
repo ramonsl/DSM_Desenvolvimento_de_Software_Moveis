@@ -66,6 +66,8 @@ class _TodoListState extends State<TodoList> {
                 }),
             onTap: () {
               print("Lista detalhes");
+              navigateToDetail(todo, todo.title);
+
               //faça o navigate
             },
           ),
@@ -75,8 +77,11 @@ class _TodoListState extends State<TodoList> {
   }
 
   getAvatar(String title) {
-    return "r";
-    //return title.substring(0, 2);
+    if (title.length < 2) {
+      return '';
+    } else {
+      return title.substring(0, 2);
+    }
   }
 
   void _delete(BuildContext context, Todo todo) async {
