@@ -11,15 +11,18 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Todo> todoList;
-  int count = 0;
+  List<Todo> todoList = List<Todo>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateListView();
+    print(todoList.length);
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (todoList == null) {
-      todoList = List<Todo>();
-      updateListView();
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text('FOCO PORRA'),
@@ -28,7 +31,7 @@ class _TodoListState extends State<TodoList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           debugPrint('Clicl');
-          navigateToDetail(Todo('', '', ''), 'Adicionar ');
+          navigateToDetail(Todo('', '', ''), 'Adicionar');
         },
         tooltip: '+ 1 A fazer',
         child: Icon(Icons.add),
@@ -36,34 +39,31 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
-  ListView getTodosListView() {
+  Widget getTodosListView() {
     return ListView.builder(
-      itemCount: count,
+      itemCount: todoList.length,
       itemBuilder: (BuildContext context, int position) {
+        Todo todo = todoList[position];
         return Card(
           color: Colors.white,
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.blue,
-              child: Text(getAvatar(this.todoList[position].title),
+              child: Text(getAvatar(todo.title),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            title: Text(this.todoList[position].title,
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text(this.todoList[position].desc),
-            trailing: Row(
-              children: [
-                GestureDetector(
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.redAccent,
-                    ),
-                    onTap: () {
-                      _delete(context, todoList[position]);
-                    })
-              ],
-            ),
+            title:
+                Text(todo.title, style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(todo.desc),
+            trailing: GestureDetector(
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.redAccent,
+                ),
+                onTap: () {
+                  _delete(context, todo);
+                }),
             onTap: () {
               print("Lista detalhes");
               //faça o navigate
@@ -75,13 +75,14 @@ class _TodoListState extends State<TodoList> {
   }
 
   getAvatar(String title) {
-    return title.substring(0, 2);
+    return "r";
+    //return title.substring(0, 2);
   }
 
   void _delete(BuildContext context, Todo todo) async {
     int result = await databaseHelper.deleteTodo(todo.id);
     if (result != 0) {
-      _showSnackBar(context, 'Todo Deleted Successfully');
+      _showSnackBar(context, 'Deletado...');
       updateListView();
     }
   }
@@ -98,23 +99,21 @@ class _TodoListState extends State<TodoList> {
       todoListFuture.then((todoList) {
         setState(() {
           this.todoList = todoList;
-          this.count = todoList.length;
         });
       });
     });
   }
 
   void navigateToDetail(Todo todo, String title) async {
-    bool result =
-        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return TodoDetail(todo, title);
       debugPrint("Chamou a segunda tela");
 
       //return TodoDetail(todo, title);
-    }));
-
-    if (result == true) {
-      updateListView();
-    }
+    })).then((result) {
+      if (result ?? true) {
+        updateListView();
+      }
+    });
   }
 }
