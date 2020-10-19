@@ -34,6 +34,7 @@ class _TodoDetailState extends State<TodoDetail> {
     return WillPopScope(
         onWillPop: () {
           moveToLastScreen();
+          return Future.value(true);
         },
         child: Scaffold(
           appBar: AppBar(
